@@ -42,6 +42,14 @@ node src/cli.js list --limit 10
 node src/cli.js stats "Pune"
 ```
 
+Start the web dashboard on port 3000 with:
+
+```sh
+npm start
+```
+
+Open [http://localhost:3000](http://localhost:3000) to refresh city weather, browse recent logs, and view per-city summaries and temperature history.
+
 ### What you'll end up with
 
 ```

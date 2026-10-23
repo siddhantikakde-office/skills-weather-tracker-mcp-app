@@ -30,6 +30,35 @@ export function getRecentLogs(limit) {
   `).all(limit);
 }
 
+// Return each city's latest temperature, average temperature, and log count.
+export function getCitySummaries() {
+  return database.prepare(`
+    SELECT
+      latest.city,
+      latest.country,
+      latest.temperature_c AS latest_temperature,
+      summary.average_temperature,
+      summary.log_count
+    FROM weather_logs AS latest
+    JOIN (
+      SELECT
+        city COLLATE NOCASE AS city_key,
+        AVG(temperature_c) AS average_temperature,
+        COUNT(*) AS log_count
+      FROM weather_logs
+      GROUP BY city COLLATE NOCASE
+    ) AS summary ON latest.city COLLATE NOCASE = summary.city_key
+    WHERE NOT EXISTS (
+      SELECT 1
+      FROM weather_logs AS newer
+      WHERE newer.city = latest.city COLLATE NOCASE
+        AND (newer.created_at > latest.created_at
+          OR (newer.created_at = latest.created_at AND newer.id > latest.id))
+    )
+    ORDER BY latest.city COLLATE NOCASE
+  `).all();
+}
+
 // Aggregate temperature statistics for a city, ignoring city-name case.
 export function getCityStats(city) {
   return database.prepare(`
