@@ -10,6 +10,7 @@
   "scripts": {
     "add": "node src/cli.js add",
     "list": "node src/cli.js list",
-    "stats": "node src/cli.js stats"
+    "stats": "node src/cli.js stats",
+    "start": "node src/server.js"
   }
 }
